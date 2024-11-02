@@ -5,6 +5,7 @@ const {auth} = require('./middleware/auth')
 router.use('/',require('./router/main'))
 router.use('/auth',require('./router/auth'))
 router.use('/review',auth, require('./router/reviews'))
+router.use("/review-type", auth, require("./router/review-type"))
 router.use('/user',auth, require('./router/user'))
 
 module.exports = router

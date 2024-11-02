@@ -1,8 +1,5 @@
 const Review = require('../model/review')
 
-const {bot} = require('../bot')
-
-
 const get_reviews = async (req,res) => {
 
     const page = +req.query.page || 1
@@ -58,7 +55,7 @@ const status_review = async (req, res) => {
         let upData = await Review.findOne({_id:id}).populate(['user']).lean()
         res.status(200).send(upData)
     } else {
-        res.ststus(400).send({message: "Id topilmadi"})
+        res.status(400).send({message: "Id topilmadi"})
     }
 }
 

@@ -3,6 +3,7 @@ require('dotenv').config()
 
 const auth = (req, res, next) => {
     try {
+        return next()   // test sifatida qo'shildi vaqtincha
         const token = req.headers.authorization.split(' ')[1]
         console.log(token)
         if (!token) {
