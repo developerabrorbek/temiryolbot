@@ -8,8 +8,6 @@ const pass = 'admin'
 const login = async (req, res) => {
     if (req.body) {
         let {login, password} = req.body
-        // console.log(req.body)
-        // const isPassValid = bcrypt.compareSync(password, pass)
         if (login !== log){
             return res.status(400).json("Пользователь не найдено")
         }
@@ -17,7 +15,10 @@ const login = async (req, res) => {
             return res.status(400).json("Пароль на правильно")
         }
         const token = jwt.sign({msg: process.env.secretKey}, process.env.secretKey, {expiresIn: "1d"})        
-        res.send(token)
+        res.send({
+            success: true,
+            token
+        })
     }
 }
 
