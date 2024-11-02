@@ -2,11 +2,20 @@ const ReviewType = require("../model/review-type");
 
 const getAllReviewTypes = async (req, res, next) => {
   try {
+    const reviewTypesWithSubReviews = await ReviewType.find({
+      sub_reviews: {
+        $not: {
+          $size: 0,
+        },
+      },
+    }).populate("sub_reviews");
+
     const allReviewTypes = await ReviewType.find().populate("sub_reviews");
 
     res.status(200).send({
       message: "success",
       data: allReviewTypes,
+      subReviews: reviewTypesWithSubReviews,
     });
   } catch (error) {
     next(error);
@@ -18,9 +27,9 @@ const createReviewType = async (req, res, next) => {
     const { name, reviewTypeId } = req.body;
 
     const newReviewType = new ReviewType({
-        name,
-        reviewTypeId,
-      });
+      name,
+      reviewTypeId,
+    });
 
     if (reviewTypeId) {
       const parentReviewType = await ReviewType.findById(reviewTypeId);
@@ -44,7 +53,52 @@ const createReviewType = async (req, res, next) => {
   }
 };
 
+const updateReviewType = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const { name } = req.body;
+
+    const reviewType = await ReviewType.findByIdAndUpdate(
+      id,
+      { name },
+      { new: true }
+    );
+
+    if (!reviewType) {
+      throw new Error("Review type not found");
+    }
+
+    res.status(200).send({
+      message: "success",
+      data: reviewType,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+const deleteReviewType = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+
+    const reviewType = await ReviewType.findByIdAndDelete(id);
+
+    if (!reviewType) {
+      throw new Error("Review type not found");
+    }
+
+    res.status(200).send({
+      message: "success",
+      data: reviewType,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   getAllReviewTypes,
   createReviewType,
+  updateReviewType,
+  deleteReviewType,
 };
