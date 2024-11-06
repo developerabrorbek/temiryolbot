@@ -17,8 +17,16 @@ const Review = new Schema(
       type: Schema.Types.ObjectId,
       ref: "ReviewType",
     },
+    parent_review_type: {
+      type: Schema.Types.ObjectId,
+      ref: "ReviewType",
+    },
     status: {
       type: Number,
+      default: 0,
+    },
+    category: {
+      type: Schema.Types.Number,
       default: 0,
     },
   },

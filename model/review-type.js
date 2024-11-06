@@ -11,6 +11,10 @@ const ReviewType = new Schema(
         ref: "ReviewType",
       },
     ],
+    review: {
+      type: Schema.Types.ObjectId,
+      ref: "ReviewType",
+    },
   },
   { timestamps: true, collection: "review_type" }
 );

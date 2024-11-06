@@ -28,7 +28,7 @@ const createReviewType = async (req, res, next) => {
 
     const newReviewType = new ReviewType({
       name,
-      reviewTypeId,
+      review: reviewTypeId,
     });
 
     if (reviewTypeId) {
