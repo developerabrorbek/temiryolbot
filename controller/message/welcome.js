@@ -6,7 +6,7 @@ const { log_msg, remove_msg } = require("../../helper/msg");
 const path = require("path");
 
 const welcome = async (msg) => {
-  const chat_id = msg.from.id;
+  const chat_id = msg.chat.id;
   await remove_msg(chat_id);
   let user = await User.findOne({ chat_id }).lean();
   await User.findByIdAndUpdate(
