@@ -19,7 +19,7 @@ const get_reviews = async (req,res) => {
     const data = await Review
         .find({...fil})
         .select(select)
-        .populate(['user'])
+        .populate(['user', 'review_type', 'parent_review_type'])
         .skip(skip)
         .limit(limit)
         .sort({_id:-1})
@@ -37,7 +37,7 @@ const get_reviews = async (req,res) => {
 const get_review = async (req,res) => {
     if (req.params.id){
         const id = req.params.id 
-        let review = await Review.findById(id).populate(['user']).lean()
+        let review = await Review.findById(id).populate(['user', 'review_type', 'parent_review_type']).lean()
         res.json(review)
     }
 }

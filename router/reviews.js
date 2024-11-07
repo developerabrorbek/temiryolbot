@@ -1,10 +1,14 @@
-const router = require('express').Router()
+const router = require("express").Router();
 
-const {get_reviews, status_review} = require('../controller/reviews')
+const {
+  get_reviews,
+  status_review,
+  get_review,
+} = require("../controller/reviews");
+const { auth } = require("../middleware/auth");
 
-router.get('/', get_reviews)
-router.get('/:id/:status', status_review)
-router.get('/:id', status_review)
+router.get("/", auth, get_reviews);
+router.get("/:id/:status", auth, status_review);
+router.get("/:id", auth, get_review);
 
-
-module.exports = router
+module.exports = router;
