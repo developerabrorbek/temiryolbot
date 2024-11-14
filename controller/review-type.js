@@ -3,11 +3,17 @@ const ReviewType = require("../model/review-type");
 const getAllReviewTypes = async (req, res, next) => {
   try {
     const reviewTypesWithSubReviews = await ReviewType.find({
-      sub_reviews: {
-        $not: {
-          $size: 0,
-        },
-      },
+      // $or: [
+      //   {
+      //     sub_reviews: {
+      //       $not: {
+      //         $size: 0,
+      //       },
+      //     },
+      //   },
+
+      // ],
+      review: null,
     }).populate("sub_reviews");
 
     const allReviewTypes = await ReviewType.find().populate("sub_reviews");
@@ -28,7 +34,6 @@ const createReviewType = async (req, res, next) => {
 
     const newReviewType = new ReviewType({
       name,
-      review: reviewTypeId,
     });
 
     if (reviewTypeId) {
@@ -37,6 +42,8 @@ const createReviewType = async (req, res, next) => {
       if (!parentReviewType) {
         throw new Error("Invalid review type id");
       }
+
+      newReviewType.review = reviewTypeId;
 
       parentReviewType.sub_reviews.push(newReviewType._id);
       await parentReviewType.save();

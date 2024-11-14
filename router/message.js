@@ -163,7 +163,7 @@ bot.on("callback_query", async (callbackQuery) => {
         text: foundedReviewType.sub_reviews[i].name[user.language],
         callback_data: `sub_review_type-${foundedReviewType.sub_reviews[i].id}`,
       });
-      if (i + 1 < foundedReviewType.length) {
+      if (i + 1 < foundedReviewType.sub_reviews.length) {
         keyboardArr.push({
           text: foundedReviewType.sub_reviews[i + 1].name[user.language],
           callback_data: `sub_review_type-${
