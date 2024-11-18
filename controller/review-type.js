@@ -14,7 +14,7 @@ const getAllReviewTypes = async (req, res, next) => {
 
       // ],
       review: null,
-    }).populate("sub_reviews");
+    }).populate("sub_reviews").sort("-priority");
 
     const allReviewTypes = await ReviewType.find().populate("sub_reviews");
 
@@ -30,24 +30,28 @@ const getAllReviewTypes = async (req, res, next) => {
 
 const createReviewType = async (req, res, next) => {
   try {
-    const { name, reviewTypeId } = req.body;
+    const { name, reviewTypeId, priority } = req.body;
 
     const newReviewType = new ReviewType({
       name,
     });
 
-    if (reviewTypeId) {
-      const parentReviewType = await ReviewType.findById(reviewTypeId);
-
-      if (!parentReviewType) {
-        throw new Error("Invalid review type id");
-      }
-
-      newReviewType.review = reviewTypeId;
-
-      parentReviewType.sub_reviews.push(newReviewType._id);
-      await parentReviewType.save();
+    if(priority == 0 || priority) {
+      newReviewType.priority = priority
     }
+
+    // if (reviewTypeId) {
+    //   const parentReviewType = await ReviewType.findById(reviewTypeId);
+
+    //   if (!parentReviewType) {
+    //     throw new Error("Invalid review type id");
+    //   }
+
+    //   newReviewType.review = reviewTypeId;
+
+    //   parentReviewType.sub_reviews.push(newReviewType._id);
+    //   await parentReviewType.save();
+    // }
 
     await newReviewType.save();
 

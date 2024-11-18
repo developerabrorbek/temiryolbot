@@ -9,7 +9,6 @@ const fs = require("fs");
 const path = require("path");
 const https = require("https");
 const reviewType = require("../../model/review-type");
-const { start } = require("./start");
 
 const start_review = async (msg) => {
   const chat_id = msg.from.id;
@@ -305,13 +304,7 @@ const start_ticket = async (msg) => {
   let id = uuidv4();
 
   const reviewTypes = await reviewType
-    .find({
-      sub_reviews: {
-        $not: {
-          $size: 0,
-        },
-      },
-    })
+    .find().sort("-priority")
     .populate("sub_reviews");
 
   const reviewTypeBtns = [];

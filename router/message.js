@@ -104,7 +104,7 @@ bot.on("callback_query", async (callbackQuery) => {
           $size: 0,
         },
       },
-    }).populate("sub_reviews");
+    }).sort("-priority").populate("sub_reviews");
 
     const reviewTypeBtns = [];
     for (let i = 0; i < reviewTypes.length; i += 2) {
@@ -143,63 +143,48 @@ bot.on("callback_query", async (callbackQuery) => {
 
     await User.findByIdAndUpdate(
       user._id,
-      { ...user, action: "review_3_5" },
+      { ...user, action: "review_4" },
       { new: true }
     );
-
-    const foundedReviewType = await ReviewType.findOne({
-      _id: reviewId,
-    }).populate("sub_reviews");
 
     await Review.updateOne(
       { user: user._id, status: 0 },
       { parent_review_type: reviewId }
     );
 
-    const reviewTypeBtns = [];
-    for (let i = 0; i < foundedReviewType.sub_reviews.length; i += 2) {
-      const keyboardArr = [];
-      keyboardArr.push({
-        text: foundedReviewType.sub_reviews[i].name[user.language],
-        callback_data: `sub_review_type-${foundedReviewType.sub_reviews[i].id}`,
-      });
-      if (i + 1 < foundedReviewType.sub_reviews.length) {
-        keyboardArr.push({
-          text: foundedReviewType.sub_reviews[i + 1].name[user.language],
-          callback_data: `sub_review_type-${
-            foundedReviewType.sub_reviews[i + 1].id
-          }`,
-        });
-      }
-      reviewTypeBtns.push(keyboardArr);
-    }
+    // const reviewTypeBtns = [];
+    // for (let i = 0; i < foundedReviewType.sub_reviews.length; i += 2) {
+    //   const keyboardArr = [];
+    //   keyboardArr.push({
+    //     text: foundedReviewType.sub_reviews[i].name[user.language],
+    //     callback_data: `sub_review_type-${foundedReviewType.sub_reviews[i].id}`,
+    //   });
+    //   if (i + 1 < foundedReviewType.sub_reviews.length) {
+    //     keyboardArr.push({
+    //       text: foundedReviewType.sub_reviews[i + 1].name[user.language],
+    //       callback_data: `sub_review_type-${
+    //         foundedReviewType.sub_reviews[i + 1].id
+    //       }`,
+    //     });
+    //   }
+    //   reviewTypeBtns.push(keyboardArr);
+    // }
 
-    const msg = await bot.sendMessage(
-      chat_id,
-      lang[user.language].review_3_5 + reviewType.name[user.language],
-      {
-        reply_markup: {
-          inline_keyboard: [
-            ...reviewTypeBtns,
-            [{ text: lang[user.language].back, callback_data: "review_3" }],
-          ],
-        },
-      }
-    );
+    // const msg = await bot.sendMessage(
+    //   chat_id,
+    //   lang[user.language].review_3_5 + reviewType.name[user.language],
+    //   {
+    //     reply_markup: {
+    //       inline_keyboard: [
+    //         ...reviewTypeBtns,
+    //         [{ text: lang[user.language].back, callback_data: "review_3" }],
+    //       ],
+    //     },
+    //   }
+    // );
 
-    await log_msg(chat_id, msg.message_id);
-    return;
-  }
-
-  if (data.startsWith("sub_review_type")) {
-    const foundedReview = await Review.findOne({ user: user._id, status: 0 });
-    const subReviewTypeId = data.split("-")[1] || foundedReview.review_type;
-    const subReviewType = await ReviewType.findById(subReviewTypeId);
-
-    const subReview = await Review.updateOne(
-      { user: user._id, status: 0 },
-      { review_type: subReviewType._id }
-    );
+    // await log_msg(chat_id, msg.message_id);
+    // return;
 
     const categoryBtns = [];
 
@@ -214,7 +199,7 @@ bot.on("callback_query", async (callbackQuery) => {
 
     const msg = await bot.sendMessage(
       chat_id,
-      lang[user.language].review_3_5 + subReviewType.name[user.language],
+      lang[user.language].review_3_5 + reviewType.name[user.language],
       {
         reply_markup: {
           inline_keyboard: [
@@ -222,7 +207,7 @@ bot.on("callback_query", async (callbackQuery) => {
             [
               {
                 text: lang[user.language].back,
-                callback_data: `review_type-${foundedReview.parent_review_type}`,
+                callback_data: `review_3`,
               },
             ],
           ],
@@ -232,6 +217,48 @@ bot.on("callback_query", async (callbackQuery) => {
     await log_msg(chat_id, msg.message_id);
     return;
   }
+
+  // if (data.startsWith("sub_review_type")) {
+  //   const foundedReview = await Review.findOne({ user: user._id, status: 0 });
+  //   const subReviewTypeId = data.split("-")[1] || foundedReview.review_type;
+  //   const subReviewType = await ReviewType.findById(subReviewTypeId);
+
+  //   const subReview = await Review.updateOne(
+  //     { user: user._id, status: 0 },
+  //     { review_type: subReviewType._id }
+  //   );
+
+  //   const categoryBtns = [];
+
+  //   Object.keys(lang[user.language].category).forEach((key) => {
+  //     categoryBtns.push([
+  //       {
+  //         text: lang[user.language].category[key],
+  //         callback_data: `category_${key}`,
+  //       },
+  //     ]);
+  //   });
+
+  //   const msg = await bot.sendMessage(
+  //     chat_id,
+  //     lang[user.language].review_3_5 + subReviewType.name[user.language],
+  //     {
+  //       reply_markup: {
+  //         inline_keyboard: [
+  //           ...categoryBtns,
+  //           [
+  //             {
+  //               text: lang[user.language].back,
+  //               callback_data: `review_type-${foundedReview.parent_review_type}`,
+  //             },
+  //           ],
+  //         ],
+  //       },
+  //     }
+  //   );
+  //   await log_msg(chat_id, msg.message_id);
+  //   return;
+  // }
 
   if (data.startsWith("category") || data == "review_4") {
     const category = data.split("_")[1];
