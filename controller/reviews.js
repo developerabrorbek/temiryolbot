@@ -1,6 +1,6 @@
 const Review = require("../model/review");
-const path = require("path")
-const fs = require("fs")
+const path = require("path");
+const fs = require("fs");
 
 const get_reviews = async (req, res) => {
   const page = +req.query.page || 1;
@@ -105,19 +105,22 @@ const get_review = async (req, res) => {
 const delete_review = async (req, res) => {
   if (req.params.reviewId) {
     const id = req.params.reviewId;
-    const foundedReview = await Review.findById(id)
+    const foundedReview = await Review.findById(id);
 
-    if(foundedReview?.ticket) {
-      const filePath = path.join(__dirname, "..", "files", foundedReview.ticket)
+    if (foundedReview?.ticket) {
+      const filePath = path.join(
+        __dirname,
+        "..",
+        "files",
+        foundedReview.ticket
+      );
       fs.unlink(filePath, (err) => {
         if (err) {
-          return res.status(500).send('File deletion failed');
+          return res.status(500).send("File deletion failed");
         }
-    
-        return res.send('File deleted successfully');
       });
     }
-  
+
     await Review.findByIdAndDelete(id);
     return res.status(200).send({ message: "Review deleted successfully" });
   } else {
