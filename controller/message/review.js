@@ -382,6 +382,13 @@ const start_ticket = async (msg) => {
     fileUniqueId = photo.file_unique_id;
   }
 
+  if(msg.document) {
+    console.log(msg.document, "document")
+    folder = "ticket";
+    fileId = msg.document.file_id;
+    fileUniqueId = msg.document.file_unique_id;
+  }
+
   if (fileId && fileUniqueId) {
     bot
       .getFile(fileId)
