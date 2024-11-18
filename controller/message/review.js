@@ -376,7 +376,6 @@ const start_ticket = async (msg) => {
   }
 
   if(msg.document) {
-    console.log(msg.document, "document")
     folder = "ticket";
     fileId = msg.document.file_id;
     fileUniqueId = msg.document.file_unique_id;
