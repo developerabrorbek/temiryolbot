@@ -21,8 +21,8 @@ const get_reviews = async (req, res) => {
     (await Review.find({ ...fil, status: 1 })
       .select(select)
       .populate(["user", "review_type", "parent_review_type"])
-      .skip(skip)
-      .limit(limit)
+      // .skip(skip)
+      // .limit(limit)
       .sort({ _id: -1 })
       .lean()) || [];
 
@@ -31,8 +31,8 @@ const get_reviews = async (req, res) => {
   res.json({
     data,
     count,
-    page,
-    limit,
+    // page,
+    // limit,
     marks,
   });
 };
