@@ -2,8 +2,8 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken')
 require('dotenv').config()
 
-const log = 'admin'
-const pass = 'admin'
+const log = process.env.LOGIN || 'admin'
+const pass = process.env.PASSWORD || '15051508'
 
 const login = async (req, res) => {
     if (req.body) {
