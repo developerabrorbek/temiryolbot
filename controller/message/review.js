@@ -304,7 +304,8 @@ const start_ticket = async (msg) => {
   let id = uuidv4();
 
   const reviewTypes = await reviewType
-    .find().sort("-priority")
+    .find()
+    .sort("-priority")
     .populate("sub_reviews");
 
   const reviewTypeBtns = [];
@@ -375,7 +376,7 @@ const start_ticket = async (msg) => {
     fileUniqueId = photo.file_unique_id;
   }
 
-  if(msg.document) {
+  if (msg.document) {
     folder = "ticket";
     fileId = msg.document.file_id;
     fileUniqueId = msg.document.file_unique_id;
@@ -452,14 +453,13 @@ const get_review = async (msg) => {
   const chat_id = msg.from.id;
   await remove_msg(chat_id);
   let user = await User.findOne({ chat_id }).lean();
-  let message = msg
+  let message = msg;
 
   if (msg.text && user.action == "review_5") {
     await Review.updateOne(
       { user: user._id, status: 0 },
       {
         comment: msg.text,
-        status: 1,
       }
     );
 
@@ -468,18 +468,14 @@ const get_review = async (msg) => {
       { action: "review_6" },
       { new: true }
     );
-    message = await bot.sendMessage(
-      chat_id,
-      lang[user.language].get_phone,
-      {
-        reply_markup: {
-          keyboard: [
-            [{ text: lang[user.language].phone_btn, request_contact: true }],
-          ],
-          resize_keyboard: true,
-        },
-      }
-    );
+    message = await bot.sendMessage(chat_id, lang[user.language].get_phone, {
+      reply_markup: {
+        keyboard: [
+          [{ text: lang[user.language].phone_btn, request_contact: true }],
+        ],
+        resize_keyboard: true,
+      },
+    });
   }
 
   await log_msg(chat_id, message.message_id);
@@ -490,6 +486,12 @@ const end_review = async (msg) => {
   await remove_msg(chat_id);
   let user = await User.findOne({ chat_id }).lean();
   await User.updateOne({ id: user._id }, { action: "/start" });
+  await Review.updateOne(
+    { user: user._id, status: 0 },
+    {
+      status: 1,
+    }
+  );
 
   const message = await bot.sendMessage(chat_id, lang[user.language].review_6);
 
