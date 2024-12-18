@@ -2,16 +2,16 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken')
 require('dotenv').config()
 
-const log = process.env.LOGIN || 'admin'
-const pass = process.env.PASSWORD || '15051508'
+const log = process.env.LOGIN
+const pass = process.env.PASSWORD
 
 const login = async (req, res) => {
     if (req.body) {
         let {login, password} = req.body
-        if (login !== log){
+        if (login != log){
             return res.status(400).json("Пользователь не найдено")
         }
-        if (pass !== password) {
+        if (pass != password) {
             return res.status(400).json("Пароль на правильно")
         }
         const token = jwt.sign({msg: process.env.secretKey}, process.env.secretKey, {expiresIn: "1d"})        
