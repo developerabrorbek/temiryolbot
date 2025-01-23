@@ -6,7 +6,10 @@ const User = new Schema(
     action: String,
     name: Number,
     phone_number: String,
-    language: String,
+    language: {
+      type: String,
+      default: "uz",
+    },
   },
   { timestamps: true, collection: "users" }
 );
